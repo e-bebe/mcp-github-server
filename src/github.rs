@@ -59,7 +59,7 @@ impl GitHubClient {
             .items
             .into_iter()
             .map(|repo| Repository {
-                name: repo.name.unwrap_or_default(),
+                name: repo.name,
                 full_name: repo.full_name.unwrap_or_default(),
                 description: repo.description,
                 html_url: repo
