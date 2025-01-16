@@ -1,0 +1,1 @@
+[Specification](https://github.com/modelcontextprotocol/specification/tree/main)
