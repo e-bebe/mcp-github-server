@@ -50,8 +50,8 @@ impl GitHubClient {
             .client
             .search()
             .repositories(&params.query)
-            .per_page(per_page)
-            .page(page)
+            .per_page(per_page as u8)
+            .page(page as u8)
             .send()
             .await?;
 
@@ -59,16 +59,18 @@ impl GitHubClient {
             .items
             .into_iter()
             .map(|repo| Repository {
-                name: repo.name,
-                full_name: repo.full_name,
+                name: repo.name.unwrap_or_default(),
+                full_name: repo.full_name.unwrap_or_default(),
                 description: repo.description,
-                html_url: repo.html_url.to_string(),
-                stargazers_count: repo.stargazers_count,
+                html_url: repo
+                    .html_url
+                    .map_or_else(String::new, |url| url.to_string()),
+                stargazers_count: repo.stargazers_count.unwrap_or(0) as u32,
             })
             .collect();
 
         Ok(SearchRepositoriesResult {
-            total_count: result.total_count,
+            total_count: result.total_count as u32,
             items,
         })
     }
