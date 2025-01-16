@@ -7,7 +7,7 @@ use crate::{
 use anyhow::Result;
 use serde_json::json;
 use std::sync::Arc;
-
+use tracing::info;
 pub struct Server {
     name: String,
     version: String,
@@ -27,7 +27,15 @@ impl Server {
 
     pub async fn run<T: Transport>(&self, transport: T) -> Result<()> {
         loop {
-            let message = transport.read_message().await?;
+            let message = match transport.read_message().await {
+                Ok(msg) => msg,
+                Err(e) if e.to_string() == "EOF reached" => {
+                    info!("Reached end of input, shutting down...");
+                    return Ok(()); // 正常終了として扱う
+                }
+                Err(e) => return Err(e), // その他のエラーは通常通り伝播
+            };
+            info!("Received message: {}", message);
             let request: Request = serde_json::from_str(&message)?;
 
             let response = self.handle_request(request).await?;
