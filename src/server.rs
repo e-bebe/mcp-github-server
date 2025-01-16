@@ -4,6 +4,7 @@ use crate::{
     protocol::{Request, Response},
     transport::Transport,
 };
+use anyhow::Result;
 use serde_json::json;
 use std::sync::Arc;
 
