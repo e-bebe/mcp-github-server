@@ -70,7 +70,7 @@ impl GitHubClient {
             .collect();
 
         Ok(SearchRepositoriesResult {
-            total_count: result.total_count as u32,
+            total_count: result.total_count.unwrap_or(0) as u32,
             items,
         })
     }
