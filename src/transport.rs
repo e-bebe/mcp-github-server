@@ -35,7 +35,7 @@ impl Transport for StdioTransport {
         if bytes_read == 0 {
             return Err(anyhow::anyhow!("EOF reached"));
         }
-        // 末尾の改行を削除
+
         if line.ends_with('\n') {
             line.pop();
         }
