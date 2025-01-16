@@ -31,7 +31,17 @@ impl Transport for StdioTransport {
     async fn read_message(&self) -> Result<String> {
         let mut line = String::new();
         let mut reader = self.reader.lock().await;
-        reader.read_line(&mut line).await?;
+
+        loop {
+            let bytes_read = reader.read_line(&mut line).await?;
+            if bytes_read == 0 {
+                // EOFの場合は少し待ってから再試行
+                tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+                continue;
+            }
+            break;
+        }
+
         Ok(line)
     }
 

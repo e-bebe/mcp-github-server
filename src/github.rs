@@ -33,7 +33,7 @@ pub struct GitHubClient {
 impl GitHubClient {
     pub fn new() -> Result<Self> {
         let client = Octocrab::builder()
-            .personal_token(std::env::var("GITHUB_TOKEN")?)
+            .personal_token(std::env::var("GITHUB_PERSONAL_ACCESS_TOKEN")?)
             .build()?;
 
         Ok(Self { client })
